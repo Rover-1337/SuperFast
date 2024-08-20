@@ -85,4 +85,5 @@ func main() {
 	})
 
 	// Listen and serve on 0.0.0.0:8080
-	r.Run(fmt.Sprintf(":%s", port))}
+	r.Run(fmt.Sprintf(":%s", port))
+}
