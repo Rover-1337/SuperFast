@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -22,6 +24,11 @@ func initDB() *sql.DB {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+	  port = "8000"
+	}
+
 	var db = initDB()
 	defer db.Close()
 
@@ -78,5 +85,4 @@ func main() {
 	})
 
 	// Listen and serve on 0.0.0.0:8080
-	r.Run(":8080")
-}
+	r.Run(fmt.Sprintf(":%s", port))}
