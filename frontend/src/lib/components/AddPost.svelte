@@ -24,7 +24,7 @@
 		});
 
 		if (res.ok) {
-			goto(`/api/blogPosts/${(await res.json()).id}`);
+			goto(`/blog/${(await res.json()).id}`);
 		}
 	}
 </script>
