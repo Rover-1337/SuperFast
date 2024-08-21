@@ -1,1 +1,1 @@
-export const API_URL = 'https://psychiatric-barby-rovershub-8b69a164.koyeb.app/';
+export const API_URL = 'https://interested-druci-rovershub-62c4d734.koyeb.app';
