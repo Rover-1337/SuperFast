@@ -58,6 +58,29 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": posts})
 	})
 
+	r.GET("/api/blogPosts/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		row := db.QueryRow("SELECT id, title, content, description, created_at FROM blogPosts WHERE id = ?", id)
+
+		post := make(map[string]interface{})
+		var dbID int
+		var title, content, description, createdAt string
+
+		err := row.Scan(&dbID, &title, &content, &description, &createdAt)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		post["id"] = dbID
+		post["title"] = title
+		post["content"] = content
+		post["description"] = description
+		post["created_at"] = createdAt
+
+		c.JSON(http.StatusOK, gin.H{"data": post})
+	})
+
 
 	r.POST("/api/blogPosts", func(c *gin.Context) {
 		var post struct {

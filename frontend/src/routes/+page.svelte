@@ -11,27 +11,12 @@
 	}
 </script>
 
-{#await fetchPosts()}
-	{#each Array(1, 2) as _}
-		<div>
-			<Card.Root class="w-1/3 mx-auto my-4">
-				<Card.Header>
-					<Card.Title>
-						<Skeleton class="w-1/2" />
-					</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					<Skeleton class="w-1/2" />
-				</Card.Content>
-			</Card.Root>
-		</div>
-	{/each}
-{:then posts}
+{#await fetchPosts() then posts}
 	{#if posts.data == null}
 		<p>No posts found</p>
 	{:else}{#each posts.data as post}
 			<div>
-				<Card.Root class="w-1/3 mx-auto my-4">
+				<Card.Root class="mx-auto my-4 w-1/3">
 					<Card.Header>
 						<Card.Title>
 							<a href={`/blog/${post.id}`}>{post.title}</a>
