@@ -35,11 +35,7 @@
 						<Card.Content class="flex justify-between">
 							<Button href={`/blog/${post.id}`}>Read more</Button>
 
-							<Button
-								on:click={() => deletepost(post.id)}
-								href={`/api/deleteBlogPost/${post.id}`}
-								variant="destructive">Delete</Button
-							>
+							<Button on:click={() => deletepost(post.id)} variant="destructive">Delete</Button>
 						</Card.Content>
 					</Card.Root>
 				</div>
