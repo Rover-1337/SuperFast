@@ -81,6 +81,17 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"data": post})
 	})
 
+	r.GET("/api/deleteBlogPost/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		_, err := db.Exec("DELETE FROM blogPosts WHERE id = ?", id)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Post deleted"})
+	})
+
 
 	r.POST("/api/blogPosts", func(c *gin.Context) {
 		var post struct {
