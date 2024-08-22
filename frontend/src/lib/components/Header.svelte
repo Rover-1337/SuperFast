@@ -8,7 +8,7 @@
 
 <div class="flex items-center justify-between border-b p-4">
 	<h1>
-		<a href="/" class="text-white">Rover's Hub</a>
+		<a href="/">Rover's Hub</a>
 	</h1>
 	<div class="flex items-center gap-4">
 		<AddPost />
