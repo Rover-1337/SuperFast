@@ -7,6 +7,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { API_URL } from '$lib/constant';
 	import { goto } from '$app/navigation';
+	import { redirect } from '@sveltejs/kit';
 
 	let titel: string, description: string, content: string;
 

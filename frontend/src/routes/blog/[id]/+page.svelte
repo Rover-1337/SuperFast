@@ -2,11 +2,10 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { API_URL } from '$lib/constant';
-
-	export let data;
+	import { page } from '$app/stores';
 
 	async function load() {
-		const res = await fetch(`${API_URL}/api/blogPosts/${data.params.id}`);
+		const res = await fetch(`${API_URL}/api/blogPosts/${$page.params.id}`);
 		const json = await res.json();
 		return json;
 	}
