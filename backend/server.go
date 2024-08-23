@@ -9,10 +9,14 @@ import (
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-
 	_ "github.com/glebarez/go-sqlite"
 )
+
+var secret = []byte("secret")
+const userkey = "user"
 
 func initDB() *sql.DB {
 	db, err := sql.Open("sqlite", "./init.db")
@@ -21,6 +25,17 @@ func initDB() *sql.DB {
 		log.Fatal(err)
 	}
 	return db
+}
+
+func AuthRequired(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get(userkey)
+	if user == nil {
+		// Abort the request with the appropriate error code
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	c.Next()
 }
 
 func main() {
@@ -33,7 +48,17 @@ func main() {
 	defer db.Close()
 
 	r := gin.Default()
-	r.Use(cors.Default())
+
+    corsConfig := cors.Config{
+        AllowOrigins: []string{"http://localhost:5173"},
+    }
+
+    // Use the custom CORS configuration
+    r.Use(cors.New(corsConfig))
+
+
+	r.Use(sessions.Sessions("session", cookie.NewStore(secret)))
+
 
 	r.GET("/api/blogPosts", func(c *gin.Context) {
 		rows, err := db.Query("SELECT id, title, content FROM blogPosts")
@@ -92,7 +117,6 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"message": "Post deleted"})
 	})
 
-
 	r.POST("/api/blogPosts", func(c *gin.Context) {
 		var post struct {
 			Title   string `json:"title" binding:"required"`
@@ -117,6 +141,64 @@ func main() {
 
 		c.JSON(http.StatusCreated, gin.H{"id": id})
 	})
+
+	r.POST("/api/login", func(c *gin.Context) {
+		session := sessions.Default(c)
+
+		var user struct {
+			Username string `json:"username" binding:"required"`
+			Password string `json:"password" binding:"required"`
+		}
+
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		result, err := db.Exec("SELECT * FROM users WHERE username = ? AND password = ?", user.Username, user.Password)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		id, err := result.LastInsertId()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		session.Set(userkey, id)
+		session.Save()
+
+		c.JSON(http.StatusFound, gin.H{"loggedin": true})
+	})
+
+	private := r.Group("/api/auth")
+	private.Use(AuthRequired)
+	{
+		private.GET("/dashboard", func(ctx *gin.Context) {
+			var users []map[string]int16
+
+			rows, err := db.Query("SELECT username FROM users")
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			for rows.Next() {
+				var username int16
+				if err := rows.Scan(&username); err != nil {
+					log.Fatal(err)
+				}
+				username *= 2
+				users = append(users, map[string]int16{"username": username})
+			}
+
+			ctx.JSON(http.StatusOK, gin.H{"data": users})
+		})
+		private.GET("/status", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, gin.H{"loggedin": true})
+		})
+	}
 
 	// Listen and serve on 0.0.0.0:8080
 	r.Run(fmt.Sprintf(":%s", port))

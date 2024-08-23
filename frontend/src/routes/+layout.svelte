@@ -3,6 +3,8 @@
 	import '../app.css';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onNavigate } from '$app/navigation';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import Auther from '$lib/components/Auther.svelte';
 
 	onNavigate((navigation) => {
 		// @ts-ignore
@@ -23,6 +25,8 @@
 </svelte:head>
 
 <ModeWatcher />
+<Toaster />
+<Auther />
 
 <Header />
 <slot></slot>
