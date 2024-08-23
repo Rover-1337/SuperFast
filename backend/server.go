@@ -176,7 +176,7 @@ func main() {
 	private.Use(AuthRequired)
 	{
 		private.GET("/dashboard", func(ctx *gin.Context) {
-			var users []map[string]int16
+			var users []map[string]string
 
 			rows, err := db.Query("SELECT username FROM users")
 
@@ -185,12 +185,11 @@ func main() {
 			}
 
 			for rows.Next() {
-				var username int16
+				var username string
 				if err := rows.Scan(&username); err != nil {
 					log.Fatal(err)
 				}
-				username *= 2
-				users = append(users, map[string]int16{"username": username})
+				users = append(users, map[string]string{"username": username})
 			}
 
 			ctx.JSON(http.StatusOK, gin.H{"data": users})
