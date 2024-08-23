@@ -50,7 +50,7 @@ func main() {
 	r := gin.Default()
 
     corsConfig := cors.Config{
-        AllowOrigins: []string{"http://localhost:5173"},
+        AllowOrigins: []string{"http://localhost:5173", "https://super-fast-six.vercel.app"},
     }
 
     // Use the custom CORS configuration
