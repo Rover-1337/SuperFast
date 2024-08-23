@@ -5,6 +5,8 @@
 	import { onNavigate } from '$app/navigation';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import Auther from '$lib/components/Auther.svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	injectSpeedInsights();
 
 	onNavigate((navigation) => {
 		// @ts-ignore

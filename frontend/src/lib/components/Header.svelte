@@ -25,8 +25,6 @@
 			return false;
 		}
 	}
-
-	// if authed is changed, rerender the component
 </script>
 
 <div class="flex items-center justify-between border-b p-4">
